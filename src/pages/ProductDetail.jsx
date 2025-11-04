@@ -1,450 +1,347 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../redux/cartSlice';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/cartSlice";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Form,
+  Card,
+  Carousel,
+  Badge,
+} from "react-bootstrap";
+import { FaStar, FaHeart, FaShoppingCart } from "react-icons/fa";
 
-const dummyProduct = {
-  id: '1',
-  title: 'Voyage Classic Shirt',
-  brand: 'Voyage',
-  price: 1299,
-  originalPrice: 1599,
-  sku: 'VS-CL-001',
-  colors: ['#000000', '#ffffff', '#4a90e2'], // black, white, blue
-  images: [
-    '/images/shirt1-1.jpg',
-    '/images/shirt1-2.jpg',
-    '/images/shirt1-3.jpg',
-  ],
-  description:
-    'A stylish and comfortable shirt perfect for any occasion. Made from premium cotton fabric.',
-  fabric: '100% Premium Cotton',
-  care: 'Machine wash cold, tumble dry low.',
-  styleTips: 'Pair with jeans or chinos for a casual look.',
-  sizes: [
-    { size: 'S', inStock: true },
-    { size: 'M', inStock: true },
-    { size: 'L', inStock: false },
-    { size: 'XL', inStock: true },
-  ],
-  reviews: [
-    { id: 1, user: 'Alice', rating: 5, comment: 'Great quality!', date: '2024-07-01' },
-    { id: 2, user: 'Bob', rating: 4, comment: 'Fits well and looks nice.', date: '2024-07-05' },
-  ],
-  stockStatus: 'In Stock',
-  shippingInfo: 'Free shipping on orders over ৳2000. Delivery in 3-5 days.',
-  returnPolicy: '30-day return and exchange policy.',
-};
-
-const relatedProductsDummy = [
+// ------------------ Dummy Data ------------------
+const dummyProducts = [
   {
-    id: '2',
-    title: 'Voyage Slim Fit Shirt',
-    price: 1399,
-    image: '/images/shirt2-1.jpg',
+    id: "1",
+    title: "Casual Chek Shirt - VC352",
+    brand: "Voyage",
+    price: 1480,
+    originalPrice: 1850,
+    colors: ["#b49a68", "#4a4a4a", "#e3e3e3"],
+    images: ["/images/shirt1.jpg", "/images/shirt2.jpg", "/images/shirt3.jpg"],
+    sizes: [
+      { size: "L", inStock: true },
+      { size: "XL", inStock: true },
+      { size: "XXL", inStock: false },
+    ],
+    description:
+      "Premium cotton casual check shirt — comfortable, breathable, and stylish. Ideal for both casual and semi-formal looks.",
+    fabric: "100% Premium Cotton",
+    care: "Machine wash cold, tumble dry low.",
+    styleTips: "Pair it with blue or black denim jeans.",
+    reviews: [
+      { id: 1, user: "Alice", rating: 5, comment: "Super comfy!", date: "2025-01-02", approved: true },
+      { id: 2, user: "Ryan", rating: 4, comment: "Nice fit!", date: "2025-01-05", approved: true },
+    ],
   },
-  {
-    id: '3',
-    title: 'Voyage Casual Polo',
-    price: 1499,
-    image: '/images/polo1.jpg',
-  },
-  {
-    id: '4',
-    title: 'Voyage Formal Shirt',
-    price: 1599,
-    image: '/images/shirt3-1.jpg',
-  },
+  { id: "2", title: "Skinny Dark Blue Jeans", price: 1390, images: ["/images/jeans1.jpg"] },
+  { id: "3", title: "Tinted Blue Jeans", price: 1390, images: ["/images/jeans2.jpg"] },
+  { id: "4", title: "Sky Light Jeans", price: 1390, images: ["/images/jeans3.jpg"] },
+  { id: "5", title: "Solid Shirt - Pink", price: 890, images: ["/images/shirt4.jpg"] },
+  { id: "6", title: "Blue Denim Shirt Contrast", price: 990, images: ["/images/shirt5.jpg"] },
 ];
 
-const ProductDetail = () => {
+export default function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // TODO: Replace dummyProduct with API fetch by id
-  const product = dummyProduct;
-
-  const [selectedSize, setSelectedSize] = useState(
-    product.sizes.find((s) => s.inStock)?.size || product.sizes[0].size
-  );
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedImage, setSelectedImage] = useState(product.images[0]);
+  const [product, setProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [reviews, setReviews] = useState(product.reviews);
+  const [reviews, setReviews] = useState([]);
+  const [reviewForm, setReviewForm] = useState({ user: "", rating: 5, comment: "" });
+  const [activeTab, setActiveTab] = useState("description");
 
-  const [reviewForm, setReviewForm] = useState({
-    user: '',
-    rating: 5,
-    comment: '',
-  });
+  useEffect(() => {
+    const prod = dummyProducts.find((p) => p.id === id) || dummyProducts[0];
+    setProduct(prod);
+    setSelectedSize(prod.sizes?.find((s) => s.inStock)?.size || "");
+    setSelectedColor(prod.colors?.[0] || "");
+    setSelectedImage(prod.images?.[0] || "");
+    setReviews(prod.reviews || []);
+    window.scrollTo(0, 0);
+  }, [id]);
 
-  const averageRating =
-    reviews.length
-      ? reviews.reduce((a, r) => a + r.rating, 0) / reviews.length
-      : 0;
+  if (!product) return <div className="text-center mt-5">Loading...</div>;
+
+  const relatedProducts = dummyProducts.filter((p) => p.id !== product.id).slice(0, 4);
 
   const handleAddToCart = () => {
-    dispatch(
-      addToCart({
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        quantity,
-        size: selectedSize,
-        color: selectedColor,
-        image: selectedImage,
-      })
-    );
-    alert('Added to cart!');
+    dispatch(addToCart({ ...product, quantity, size: selectedSize, color: selectedColor, image: selectedImage }));
+    alert("✅ Added to cart!");
   };
 
   const handleBuyNow = () => {
-    // Simplified for demo: add to cart and redirect to checkout page
-    dispatch(
-      addToCart({
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        quantity,
-        size: selectedSize,
-        color: selectedColor,
-        image: selectedImage,
-      })
-    );
-    window.location.href = '/checkout';
-  };
-
-  const handleReviewInputChange = (e) => {
-    const { name, value } = e.target;
-    setReviewForm((prev) => ({
-      ...prev,
-      [name]: name === 'rating' ? parseInt(value, 10) : value,
-    }));
+    handleAddToCart();
+    navigate("/checkout");
   };
 
   const handleReviewSubmit = (e) => {
     e.preventDefault();
-    if (!reviewForm.user.trim() || !reviewForm.comment.trim()) {
-      alert('Please fill in your name and comment.');
-      return;
-    }
+    if (!reviewForm.user.trim() || !reviewForm.comment.trim()) return alert("Fill name & comment!");
     const newReview = {
       id: Date.now(),
-      user: reviewForm.user.trim(),
+      user: reviewForm.user,
       rating: reviewForm.rating,
-      comment: reviewForm.comment.trim(),
-      date: new Date().toISOString().split('T')[0],
+      comment: reviewForm.comment,
+      date: new Date().toISOString().split("T")[0],
+      approved: false,
     };
+    alert("✅ Review submitted for admin approval!");
     setReviews((prev) => [newReview, ...prev]);
-    setReviewForm({ user: '', rating: 5, comment: '' });
+    setReviewForm({ user: "", rating: 5, comment: "" });
   };
 
   return (
-    <div className="container py-5">
-      {/* Breadcrumb */}
-      <nav aria-label="breadcrumb" className="mb-3">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item"><a href="/">Home</a></li>
-          <li className="breadcrumb-item"><a href="/category/shirts">Shirts</a></li>
-          <li className="breadcrumb-item active" aria-current="page">{product.title}</li>
-        </ol>
-      </nav>
-
-      <div className="row">
-        {/* Image Gallery */}
-        <div className="col-md-6 mb-4">
+    <Container className="py-4">
+      {/* ------------ Desktop View ------------ */}
+      <Row className="g-4 d-none d-md-flex">
+        <Col md={6}>
           <img
             src={selectedImage}
-            alt={product.title}
-            className="img-fluid rounded mb-3"
-            style={{ cursor: 'zoom-in' }}
-            onClick={() => window.open(selectedImage, '_blank')}
+            alt="Product"
+            className="img-fluid rounded shadow-sm mb-3"
           />
-          <div className="d-flex">
-            {product.images.map((img, i) => (
+          <div className="d-flex gap-2">
+            {product.images?.map((img, idx) => (
               <img
-                key={i}
+                key={idx}
                 src={img}
-                alt={`Thumbnail ${i + 1}`}
-                className={`img-thumbnail me-2 ${img === selectedImage ? 'border-primary' : ''}`}
-                style={{ width: '60px', cursor: 'pointer' }}
+                alt="thumb"
                 onClick={() => setSelectedImage(img)}
+                className={`img-fluid rounded border ${selectedImage === img ? "border-dark" : ""
+                  }`}
+                style={{ width: 80, height: 90, cursor: "pointer" }}
               />
             ))}
           </div>
+        </Col>
+
+        <Col md={6}>
+          <p className="text-muted mb-1">{product.brand || "Men Fashion"}</p>
+          <h3 className="fw-semibold">{product.title}</h3>
+          <h5 className="fw-bold mt-2 text-dark">
+            ৳{product.price}{" "}
+            {product.originalPrice && (
+              <del className="text-muted fs-6 ms-2">৳{product.originalPrice}</del>
+            )}
+          </h5>
+
+          {/* Colors */}
+          {product.colors && (
+            <div className="mt-3">
+              <p className="fw-semibold mb-1">Color</p>
+              <div className="d-flex gap-2">
+                {product.colors.map((color) => (
+                  <div
+                    key={color}
+                    onClick={() => setSelectedColor(color)}
+                    style={{
+                      width: 25,
+                      height: 25,
+                      borderRadius: "50%",
+                      backgroundColor: color,
+                      border: selectedColor === color ? "2px solid black" : "1px solid #ccc",
+                      cursor: "pointer",
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Sizes */}
+          {product.sizes && (
+            <div className="mt-3">
+              <p className="fw-semibold mb-1">Select Size</p>
+              <div className="d-flex flex-wrap gap-2">
+                {product.sizes.map((s) => (
+                  <Button
+                    key={s.size}
+                    variant={
+                      s.inStock
+                        ? selectedSize === s.size
+                          ? "dark"
+                          : "outline-dark"
+                        : "outline-secondary"
+                    }
+                    size="sm"
+                    disabled={!s.inStock}
+                    onClick={() => setSelectedSize(s.size)}
+                    className="rounded-pill"
+                  >
+                    {s.size}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <Button variant="dark" className="w-100 mt-3 py-2" onClick={handleAddToCart}>
+            <FaShoppingCart className="me-2" />
+            Add to Cart
+          </Button>
+
+          <div className="mt-4">
+            <h6 className="fw-semibold">Description</h6>
+            <p className="text-muted small">{product.description}</p>
+            <p className="small mb-0">
+              <strong>Fabric:</strong> {product.fabric}
+            </p>
+            <p className="small mb-0">
+              <strong>Care:</strong> {product.care}
+            </p>
+            <p className="small">
+              <strong>Style Tips:</strong> {product.styleTips}
+            </p>
+          </div>
+        </Col>
+      </Row>
+
+      {/* ------------ Mobile View ------------ */}
+      <div className="d-block d-md-none">
+        <div className="position-relative">
+          <Carousel indicators={false} interval={2000}>
+            {product.images?.map((img, idx) => (
+              <Carousel.Item key={idx}>
+                <img
+                  src={img}
+                  alt="Product"
+                  className="img-fluid w-100 rounded"
+                  style={{ maxHeight: "400px", objectFit: "cover" }}
+                />
+              </Carousel.Item>
+            ))}
+          </Carousel>
+          <Button
+            variant="light"
+            className="position-absolute top-0 end-0 m-2 rounded-circle shadow-sm"
+          >
+            <FaHeart />
+          </Button>
         </div>
 
-        {/* Product Info */}
-        <div className="col-md-6">
-          <h2>{product.title}</h2>
-          <p className="text-muted">Brand: {product.brand}</p>
-
-          <div className="mb-2">
-            <strong>Rating: </strong> {averageRating.toFixed(1)} / 5 {' '}
-            <span>{'⭐'.repeat(Math.round(averageRating))}</span> ({reviews.length} reviews)
+        <div className="mt-3 px-2">
+          <div className="d-flex justify-content-between align-items-center">
+            <h5 className="fw-semibold mb-0">{product.title}</h5>
+            <span className="fw-bold fs-5">৳{product.price}</span>
+          </div>
+          <div className="d-flex align-items-center gap-1 text-warning mt-1">
+            <FaStar />
+            <span className="fw-semibold">4.5</span>
           </div>
 
-          <div className="mb-3">
-            <span className="fs-4 text-success me-3">৳{product.price}</span>
-            {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-muted text-decoration-line-through">৳{product.originalPrice}</span>
+          {/* Sizes */}
+          {product.sizes && (
+            <div className="mt-3">
+              <p className="fw-semibold mb-1">Size</p>
+              <div className="d-flex flex-wrap gap-2">
+                {product.sizes.map((s) => (
+                  <Button
+                    key={s.size}
+                    variant={
+                      s.inStock
+                        ? selectedSize === s.size
+                          ? "dark"
+                          : "outline-dark"
+                        : "outline-secondary"
+                    }
+                    size="sm"
+                    disabled={!s.inStock}
+                    onClick={() => setSelectedSize(s.size)}
+                    className="rounded-pill"
+                  >
+                    {s.size}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Tabs */}
+          <div className="mt-4 border-bottom d-flex justify-content-between">
+            <Button
+              variant="link"
+              className={`text-decoration-none ${activeTab === "description" ? "fw-bold text-dark" : "text-muted"
+                }`}
+              onClick={() => setActiveTab("description")}
+            >
+              Description
+            </Button>
+            <Button
+              variant="link"
+              className={`text-decoration-none ${activeTab === "reviews" ? "fw-bold text-dark" : "text-muted"
+                }`}
+              onClick={() => setActiveTab("reviews")}
+            >
+              Reviews
+            </Button>
+          </div>
+
+          <div className="mt-2 small text-muted">
+            {activeTab === "description" ? (
+              <p>{product.description}</p>
+            ) : (
+              <div>
+                {reviews.map((r) => (
+                  <div key={r.id} className="border-bottom py-2">
+                    <strong>{r.user}</strong> ⭐{r.rating}
+                    <p className="mb-1 small">{r.comment}</p>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 
-          <p><strong>SKU:</strong> {product.sku}</p>
-
-          {/* Color Swatches */}
-          <div className="mb-3">
-            <strong>Colors:</strong>
-            <div className="d-flex align-items-center mt-1">
-              {product.colors.map((color) => (
-                <div
-                  key={color}
-                  onClick={() => setSelectedColor(color)}
-                  style={{
-                    backgroundColor: color,
-                    width: 30,
-                    height: 30,
-                    borderRadius: '50%',
-                    marginRight: 10,
-                    cursor: 'pointer',
-                    border: selectedColor === color ? '2px solid #000' : '1px solid #ccc',
-                  }}
-                  title={color}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Size Selector */}
-          <div className="mb-3">
-            <label htmlFor="size" className="form-label">
-              Select Size:
-            </label>
-            <select
-              id="size"
-              className="form-select w-auto"
-              value={selectedSize}
-              onChange={(e) => setSelectedSize(e.target.value)}
-            >
-              {product.sizes.map(({ size, inStock }) => (
-                <option
-                  key={size}
-                  value={size}
-                  disabled={!inStock}
-                >
-                  {size} {inStock ? '' : '(Out of Stock)'}
-                </option>
-              ))}
-            </select>
-            <button
-              className="btn btn-link p-0 mt-1"
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#sizeGuideModal"
-            >
-              View Size Guide
-            </button>
-          </div>
-
-          {/* Quantity Selector */}
-          <div className="mb-3">
-            <label htmlFor="quantity" className="form-label">
-              Quantity:
-            </label>
-            <input
-              type="number"
-              id="quantity"
-              className="form-control w-auto"
-              min={1}
-              max={10}
-              value={quantity}
-              onChange={(e) =>
-                setQuantity(Math.max(1, Math.min(10, +e.target.value)))
-              }
-            />
-          </div>
-
-          {/* Stock Status */}
-          <p>
-            <strong>Availability:</strong> {product.stockStatus}
-          </p>
-
-          {/* Add to Cart & Buy Now */}
-          <div className="d-flex gap-2 mb-3">
-            <button className="btn btn-primary flex-grow-1" onClick={handleAddToCart}>
-              Add to Cart
-            </button>
-            <button className="btn btn-success flex-grow-1" onClick={handleBuyNow}>
+          {/* Bottom Buttons */}
+          <div className="d-flex gap-2 mt-4 pb-3">
+            <Button variant="outline-dark" className="flex-grow-1" onClick={handleAddToCart}>
+              <FaShoppingCart className="me-1" /> Add to Cart
+            </Button>
+            <Button variant="dark" className="flex-grow-1" onClick={handleBuyNow}>
               Buy Now
-            </button>
-          </div>
-
-          {/* Wishlist & Share */}
-          <div className="mb-3 d-flex gap-3 align-items-center">
-            <button className="btn btn-outline-secondary">
-              Save to Wishlist
-            </button>
-            <div>
-              <strong>Share:</strong>{' '}
-              <a href="#" aria-label="Share on Facebook" className="me-2">Facebook</a>
-              <a href="#" aria-label="Share on Twitter" className="me-2">Twitter</a>
-              <a href="#" aria-label="Share on Instagram">Instagram</a>
-            </div>
-          </div>
-
-          {/* Shipping & Returns Info */}
-          <div className="mb-3">
-            <h5>Shipping & Returns</h5>
-            <p>{product.shippingInfo}</p>
-            <p>{product.returnPolicy}</p>
-          </div>
-
-          {/* Product Description, Fabric, Care & Tips */}
-          <div>
-            <h5>Description</h5>
-            <p>{product.description}</p>
-
-            <h6>Fabric/Material</h6>
-            <p>{product.fabric}</p>
-
-            <h6>Care Instructions</h6>
-            <p>{product.care}</p>
-
-            <h6>Style Tips</h6>
-            <p>{product.styleTips}</p>
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* Size Guide Modal */}
-      <div className="modal fade" id="sizeGuideModal" tabIndex="-1" aria-labelledby="sizeGuideModalLabel" aria-hidden="true">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="sizeGuideModalLabel">Size Guide</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Size</th>
-                    <th>Chest (inches)</th>
-                    <th>Waist (inches)</th>
-                    <th>Length (inches)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>S</td><td>36-38</td><td>30-32</td><td>28</td></tr>
-                  <tr><td>M</td><td>38-40</td><td>32-34</td><td>29</td></tr>
-                  <tr><td>L</td><td>40-42</td><td>34-36</td><td>30</td></tr>
-                  <tr><td>XL</td><td>42-44</td><td>36-38</td><td>31</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Reviews */}
+      {/* ------------ Related Products ------------ */}
       <div className="mt-5">
-        <h3>Customer Reviews</h3>
-
-        {/* Review Submission Form */}
-        <form className="mb-4" onSubmit={handleReviewSubmit}>
-          <h5>Submit a Review</h5>
-          <div className="mb-3">
-            <label htmlFor="user" className="form-label">Your Name</label>
-            <input
-              type="text"
-              id="user"
-              name="user"
-              className="form-control"
-              value={reviewForm.user}
-              onChange={handleReviewInputChange}
-              required
-            />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="rating" className="form-label">Rating</label>
-            <select
-              id="rating"
-              name="rating"
-              className="form-select w-auto"
-              value={reviewForm.rating}
-              onChange={handleReviewInputChange}
-            >
-              {[5,4,3,2,1].map((r) => (
-                <option key={r} value={r}>{r} Star{r > 1 ? 's' : ''}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="comment" className="form-label">Comment</label>
-            <textarea
-              id="comment"
-              name="comment"
-              rows="3"
-              className="form-control"
-              value={reviewForm.comment}
-              onChange={handleReviewInputChange}
-              required
-            ></textarea>
-          </div>
-
-          <button type="submit" className="btn btn-outline-primary">
-            Submit Review
-          </button>
-        </form>
-
-        {/* List Reviews */}
-        {reviews.length === 0 ? (
-          <p>No reviews yet.</p>
-        ) : (
-          <ul className="list-group">
-            {reviews.map((review) => (
-              <li key={review.id} className="list-group-item">
-                <strong>{review.user}</strong> —{' '}
-                <span>{'⭐'.repeat(review.rating)}</span>
-                <br />
-                <small className="text-muted">{review.date}</small>
-                <p>{review.comment}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Related Products */}
-      <div className="mt-5">
-        <h3>Related Products</h3>
-        <div className="d-flex flex-wrap gap-3">
-          {relatedProductsDummy.map((relProd) => (
-            <div
-              key={relProd.id}
-              className="card"
-              style={{ width: '12rem', cursor: 'pointer' }}
-              onClick={() => window.location.href = `/product/${relProd.id}`}
-            >
-              <img
-                src={relProd.image}
-                className="card-img-top"
-                alt={relProd.title}
-                style={{ height: '150px', objectFit: 'cover' }}
-              />
-              <div className="card-body p-2">
-                <h6 className="card-title mb-1">{relProd.title}</h6>
-                <p className="card-text text-success">৳{relProd.price}</p>
-              </div>
-            </div>
+        <h5 className="fw-semibold mb-3">You might also like</h5>
+        <Row className="g-3">
+          {relatedProducts.map((item) => (
+            <Col xs={6} md={3} key={item.id}>
+              <Card className="border-0 shadow-sm rounded h-100">
+                <Card.Img
+                  variant="top"
+                  src={item.images?.[0]}
+                  style={{ height: "220px", objectFit: "cover" }}
+                />
+                <Card.Body>
+                  <Card.Title className="fs-6 mb-1">{item.title}</Card.Title>
+                  <div className="fw-semibold text-dark">৳{item.price}</div>
+                  <Button
+                    variant="outline-dark"
+                    size="sm"
+                    className="mt-2 w-100"
+                    onClick={() => navigate(`/product/${item.id}`)}
+                  >
+                    View Details
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
           ))}
-        </div>
+        </Row>
       </div>
-    </div>
+    </Container>
   );
-};
-
-export default ProductDetail;
+}

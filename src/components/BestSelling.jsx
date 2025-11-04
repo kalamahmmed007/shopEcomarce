@@ -1,10 +1,5 @@
-import React from "react";
-import {
-  Card,
-  Button,
-  Badge,
-  Container
-} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Card, Button, Badge, Container } from "react-bootstrap";
 import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -12,74 +7,80 @@ import { addToCart } from "../redux/cartSlice";
 import { motion } from "framer-motion";
 
 const BestSellingProducts = () => {
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const products = [
-    {
-      id: 1,
-      name: 'Casual Checked Shirt - VC305',
-      price: 1290,
-      originalPrice: 1490,
-      category: 'Men',
-      rating: 4.5,
-      image: '/src/assets/images/7.jpg',
-    },
-    {
-      id: 2,
-      name: 'Checked Shirt - VC306',
-      price: 990,
-      originalPrice: 1490,
-      category: 'Men',
-      rating: 4,
-      image: '/src/assets/images/6.jpg',
-    },
-    {
-      id: 3,
-      name: 'Striped Shirt - VC312',
-      price: 1290,
-      originalPrice: 1480,
-      category: 'Men',
-      rating: 5,
-      image: '/src/assets/images/5.jpg',
-    },
-    {
-      id: 4,
-      name: 'Printed Shirt - VC311',
-      price: 1480,
-      originalPrice: 1580,
-      category: 'Men',
-      rating: 3.5,
-      image: '/src/assets/images/4.jpg',
-    },
-    {
-      id: 5,
-      name: 'Checked Shirt - VC316',
-      price: 1290,
-      originalPrice: 1480,
-      category: 'Men',
-      rating: 4,
-      image: '/src/assets/images/3.jpg',
-    },
-    {
-      id: 6,
-      name: 'Formal Shirt - VC320',
-      price: 1190,
-      originalPrice: 1390,
-      category: 'Men',
-      rating: 4.7,
-      image: '/src/assets/images/2.jpg',
-    },
-    {
-      id: 7,
-      name: 'Stylish Shirt - VC325',
-      price: 1390,
-      originalPrice: 1590,
-      category: 'Men',
-      rating: 5,
-      image: '/src/assets/images/1.jpg',
-    },
-  ];
+  useEffect(() => {
+    // 🧠 Dummy products now, replace with API later
+    const dummyData = [
+      {
+        id: 1,
+        name: "Casual Checked Shirt - VC305",
+        price: 1290,
+        originalPrice: 1490,
+        category: "Men",
+        rating: 4.5,
+        image: "/src/assets/images/7.jpg",
+      },
+      {
+        id: 2,
+        name: "Checked Shirt - VC306",
+        price: 990,
+        originalPrice: 1490,
+        category: "Men",
+        rating: 4,
+        image: "/src/assets/images/6.jpg",
+      },
+      {
+        id: 3,
+        name: "Striped Shirt - VC312",
+        price: 1290,
+        originalPrice: 1480,
+        category: "Men",
+        rating: 5,
+        image: "/src/assets/images/5.jpg",
+      },
+      {
+        id: 4,
+        name: "Printed Shirt - VC311",
+        price: 1480,
+        originalPrice: 1580,
+        category: "Men",
+        rating: 3.5,
+        image: "/src/assets/images/4.jpg",
+      },
+      {
+        id: 5,
+        name: "Checked Shirt - VC316",
+        price: 1290,
+        originalPrice: 1480,
+        category: "Men",
+        rating: 4,
+        image: "/src/assets/images/3.jpg",
+      },
+      {
+        id: 6,
+        name: "Formal Shirt - VC320",
+        price: 1190,
+        originalPrice: 1390,
+        category: "Men",
+        rating: 4.7,
+        image: "/src/assets/images/2.jpg",
+      },
+      {
+        id: 7,
+        name: "Stylish Shirt - VC325",
+        price: 1390,
+        originalPrice: 1590,
+        category: "Men",
+        rating: 5,
+        image: "/src/assets/images/1.jpg",
+      },
+    ];
+
+    setProducts(dummyData);
+  }, []);
 
   const settings = {
     dots: false,
@@ -92,24 +93,27 @@ const BestSellingProducts = () => {
     pauseOnHover: true,
     arrows: true,
     responsive: [
-      {
-        breakpoint: 1200,
-        settings: { slidesToShow: 4 },
-      },
-      {
-        breakpoint: 992,
-        settings: { slidesToShow: 3 },
-      },
-      {
-        breakpoint: 576,
-        settings: { slidesToShow: 2 },
-      },
+      { breakpoint: 1200, settings: { slidesToShow: 3 } },
+      { breakpoint: 992, settings: { slidesToShow: 2 } },
+      { breakpoint: 576, settings: { slidesToShow: 2 } },
     ],
   };
 
   return (
     <Container className="my-5">
-      <h4 className="text-center mb-4">BEST SELLING PRODUCTS</h4>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h3 className="text-center flex-grow-1">
+          BEST SELLING <span className="text-danger">PRODUCTS</span>
+        </h3>
+        <Button
+          variant="outline-primary"
+          size="sm"
+          onClick={() => navigate("/best-sellers")}
+        >
+          View All
+        </Button>
+      </div>
+
       <Slider {...settings}>
         {products.map((product, index) => (
           <motion.div
@@ -121,7 +125,7 @@ const BestSellingProducts = () => {
           >
             <Card
               className="shadow-sm border-0 mx-2"
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
               onClick={() => navigate(`/product/${product.id}`)}
             >
               <div className="position-relative">
@@ -129,7 +133,7 @@ const BestSellingProducts = () => {
                   variant="top"
                   src={product.image}
                   alt={product.name}
-                  style={{ height: '260px', objectFit: 'cover' }}
+                  style={{ height: "260px", objectFit: "cover" }}
                 />
                 <Badge bg="primary" className="position-absolute top-0 start-0 m-2">
                   {product.category}
@@ -142,8 +146,8 @@ const BestSellingProducts = () => {
                 <div>
                   <Card.Title className="fs-6">{product.name}</Card.Title>
                   <div className="text-warning mb-2">
-                    {'★'.repeat(Math.floor(product.rating))}
-                    {'☆'.repeat(5 - Math.floor(product.rating))}
+                    {"★".repeat(Math.floor(product.rating))}
+                    {"☆".repeat(5 - Math.floor(product.rating))}
                   </div>
                   <p>
                     <span className="fw-bold text-primary">Tk. {product.price}</span>{" "}

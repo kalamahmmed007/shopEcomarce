@@ -13,14 +13,15 @@ import { useSelector } from 'react-redux';
 
 const CheckoutPage = () => {
   const cartItems = useSelector((state) => state.cart.items);
+
   const [formData, setFormData] = useState({
     phone: '',
     name: '',
     email: '',
     address: '',
     deliveryType: 'INSIDE DHAKA',
-    paymentMethod: 'cod',
-    onlineGateway: '',
+    paymentMethod: 'cod', // 'cod' or 'online'
+    onlineGateway: '', // 'bkash' | 'ssl'
     coupon: '',
     note: '',
     agree: false,
@@ -41,19 +42,43 @@ const CheckoutPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!formData.agree) {
-      alert('Please agree to the terms & conditions.');
+      alert('Please agree to the Terms & Conditions.');
       return;
     }
 
-    console.log('Order Submitted:', formData);
-    alert('Order placed successfully!');
+    if (!formData.phone || !formData.name || !formData.address) {
+      alert('Please fill all required fields.');
+      return;
+    }
+
+    if (formData.paymentMethod === 'online' && !formData.onlineGateway) {
+      alert('Please select an online payment method.');
+      return;
+    }
+
+    // ✅ Frontend ready: just log for now
+    const orderPayload = {
+      ...formData,
+      cartItems,
+      subtotal,
+      shipping,
+      total,
+      itemCount,
+    };
+
+    console.log('Order payload ready for backend:', orderPayload);
+
+    alert('Order placed successfully! (Frontend-only)');
+    // Later: call your backend API here
+    // e.g., axios.post('/api/orders', orderPayload)
   };
 
   return (
     <Container className="py-4">
       <Row>
-        {/* Left: Shipping & Payment Form */}
+        {/* LEFT: Shipping & Payment Form */}
         <Col md={8}>
           <h5 className="mb-3">Shipping Details</h5>
           <Form onSubmit={handleSubmit}>
@@ -82,18 +107,18 @@ const CheckoutPage = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Email Address (Optional)</Form.Label>
+              <Form.Label>Email (Optional)</Form.Label>
               <Form.Control
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Enter your email address"
+                placeholder="Enter your email"
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Your Address *</Form.Label>
+              <Form.Label>Address *</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={2}
@@ -129,7 +154,7 @@ const CheckoutPage = () => {
               </div>
             </Form.Group>
 
-            <h5 className="mt-4">Select Payment</h5>
+            <h5 className="mt-4">Payment Method</h5>
             <Form.Check
               type="radio"
               label="Cash on Delivery"
@@ -149,7 +174,6 @@ const CheckoutPage = () => {
               inline
             />
 
-            {/* COD Image */}
             {formData.paymentMethod === 'cod' && (
               <Image
                 src="/src/assets/icons/cod.png"
@@ -159,9 +183,11 @@ const CheckoutPage = () => {
               />
             )}
 
-            {/* Online Payment Gateway */}
             {formData.paymentMethod === 'online' && (
               <div className="mt-3">
+                <Alert variant="info">
+                  You will be redirected to the selected payment gateway after confirming.
+                </Alert>
                 <Form.Check
                   type="radio"
                   id="bkash"
@@ -193,18 +219,15 @@ const CheckoutPage = () => {
           </Form>
         </Col>
 
-        {/* Right: Order Summary */}
+        {/* RIGHT: Order Summary */}
         <Col md={4}>
           <div className="bg-light p-3 rounded shadow-sm">
             <h5>Order Summary</h5>
-
-            {/* ✅ Free Delivery Alert */}
             {itemCount >= 3 && (
               <Alert variant="success" className="fw-semibold text-center">
-                🎁 You've unlocked <strong>FREE DELIVERY</strong> by ordering 3 or more items!
+                🎁 Free delivery unlocked for 3+ items!
               </Alert>
             )}
-
             {cartItems.map((item) => (
               <div key={item.id} className="d-flex justify-content-between align-items-start mb-2">
                 <div className="d-flex gap-2">
@@ -232,7 +255,7 @@ const CheckoutPage = () => {
                     name="coupon"
                     value={formData.coupon}
                     onChange={handleChange}
-                    placeholder="Enter your code"
+                    placeholder="Enter coupon code"
                   />
                   <Button variant="outline-secondary">Apply</Button>
                 </InputGroup>
@@ -244,7 +267,7 @@ const CheckoutPage = () => {
               </div>
 
               <div className="d-flex justify-content-between fw-bold mt-2">
-                <span>TOTAL</span>
+                <span>Total</span>
                 <span>BDT {total}</span>
               </div>
 
@@ -265,11 +288,11 @@ const CheckoutPage = () => {
                   name="agree"
                   label={
                     <>
-                      I agree to the{' '}
+                      I agree to{' '}
                       <a href="/terms-conditions" target="_blank" rel="noreferrer">
                         Terms & Conditions
                       </a>{' '}
-                      and{' '}
+                      &{' '}
                       <a href="/privacy-policy" target="_blank" rel="noreferrer">
                         Privacy Policy
                       </a>

@@ -7,12 +7,14 @@ import NewArrival from "../components/NewArrival";
 import Shirtsection from "../components/Shirtsection"
 import Panjabi from "../components/Panjabi"
 import Pant from "../components/Pant"
+import Category from '../components/category';
 
 function Home() {
   return (
     <div>
       <Hero />
       <ServiceFeatures />
+      <Category />
       <BestSelling />
       <NewArrival />
       <Shirtsection />

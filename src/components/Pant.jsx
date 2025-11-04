@@ -94,11 +94,11 @@ const Pant = () => {
     responsive: [
       {
         breakpoint: 992,
-        settings: { slidesToShow: 4 },
+        settings: { slidesToShow: 3 },
       },
       {
         breakpoint: 768,
-        settings: { slidesToShow: 3 },
+        settings: { slidesToShow: 2 },
       },
       {
         breakpoint: 576,
@@ -109,6 +109,7 @@ const Pant = () => {
 
   return (
     <Container className="my-5">
+      <h3 className="text-center mb-4">PANT COLLECTION</h3>
       <img
         src="/assets/banner/banner1.webp"
         alt="New Arrival Banner"
@@ -211,6 +212,16 @@ const Pant = () => {
           </motion.div>
         ))}
       </Slider>
+      <div className="text-center mt-4 ">
+        <Button
+          variant="primary"
+          size="sm"
+          className="px-5 rounded-pill"
+          onClick={() => navigate(`/category/${products[0]?.category.toLowerCase()}`)}
+        >
+          View More
+        </Button>
+      </div>
     </Container>
   );
 };

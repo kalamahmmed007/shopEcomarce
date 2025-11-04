@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 
-
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -64,8 +63,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/order-success" element={<OrderSuccess />} />
-          <Route path="*" element={<NotFound />} />
           <Route path="/special-offer" element={<SpecialOfferPage />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
       </Router>

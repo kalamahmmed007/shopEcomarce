@@ -47,7 +47,7 @@ const SpecialOfferPage = () => {
       <div
         className="rounded-3 shadow-lg mb-4 d-flex flex-column justify-content-center align-items-center text-center text-white"
         style={{
-          background: "url('/assets/special-offer-banner.jpg') center center/cover no-repeat",
+          background: "url('/public/assets/banner/banner1.webp') center center/cover no-repeat",
           height: "250px",
         }}
       >

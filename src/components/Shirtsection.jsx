@@ -123,6 +123,7 @@ const Shirtsection = () => {
 
   return (
     <Container className="my-5">
+      <h3 className="text-center mb-4">SHIRT COLLECTION</h3>
       <img
         src="/assets/banner/banner1.webp"
         alt="New Arrival Banner"
@@ -212,6 +213,16 @@ const Shirtsection = () => {
           </motion.div>
         ))}
       </Slider>
+      <div className="text-center mt-4">
+        <Button
+          variant="primary"
+          size="sm"
+          className="px-5 rounded-pill"
+          onClick={() => navigate(`/category/${products[0]?.category.toLowerCase()}`)}
+        >
+          View More
+        </Button>
+      </div>
     </Container>
   );
 };

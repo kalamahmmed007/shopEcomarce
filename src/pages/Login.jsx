@@ -1,35 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../redux/authSlice';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-
-  // Simulated async login function
-  const fakeLogin = ({ email, password }) =>
-    new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (email === 'user@example.com' && password === 'password') {
-          resolve({ name: 'John Doe', email });
-        } else {
-          reject(new Error('Invalid email or password'));
-        }
-      }, 1500);
-    });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,10 +23,30 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const user = await fakeLogin(formData);
-      console.log('Login success:', user);
+      // simulate delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // demo users list
+      const demoUsers = [
+        { email: 'user@example.com', password: 'password', name: 'John Doe' },
+        { email: 'demo@example.com', password: '123456', name: 'Demo User' }
+      ];
+
+      const user = demoUsers.find(
+        (u) => u.email === formData.email && u.password === formData.password
+      );
+
+      if (!user) throw new Error('❌ Invalid email or password');
+
+      // Save user to Redux
+      dispatch(loginSuccess(user));
+
+      // Save user to localStorage (for persistence)
+      localStorage.setItem('user', JSON.stringify(user));
+
       setLoading(false);
-      // TODO: Save user to Redux or Context here
+
+      // redirect after login
       navigate('/profile');
     } catch (err) {
       setLoading(false);
@@ -53,11 +59,19 @@ const Login = () => {
       <div className="border p-4 rounded shadow" style={{ width: '100%', maxWidth: 400 }}>
         <h3 className="text-center mb-4 fw-bold">Login to Your Account</h3>
 
-        {error && (
-          <div className="alert alert-danger text-center py-2">
-            {error}
-          </div>
-        )}
+        {/* Error animation */}
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="alert alert-danger text-center py-2"
+            >
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
@@ -96,11 +110,11 @@ const Login = () => {
             </div>
           </div>
 
-          <div className="d-grid mb-2">
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+          <motion.div whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.05 }}>
+            <button type="submit" className="btn btn-primary w-100 mb-2" disabled={loading}>
               {loading ? 'Logging in...' : 'Login'}
             </button>
-          </div>
+          </motion.div>
 
           <div className="text-center">
             <small>
@@ -114,6 +128,12 @@ const Login = () => {
             </small>
           </div>
         </form>
+
+        <div className="mt-4 text-center">
+          <p className="mb-1">Demo Accounts:</p>
+          <small>Email: user@example.com | Password: password</small><br />
+          <small>Email: demo@example.com | Password: 123456</small>
+        </div>
       </div>
     </div>
   );

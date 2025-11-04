@@ -109,9 +109,9 @@ const CartPage = () => {
             <h5>Order Summary</h5>
 
             {/* ✅ Free Delivery Message */}
-            {totalItems >= 3 && (
+            {totalItems >= 5 && (
               <Alert variant="success" className="text-center fw-semibold">
-                🎉 You’ve qualified for <strong>FREE Delivery</strong> by buying 3 or more items!
+                🎉 You’ve qualified for <strong>FREE Delivery</strong> by buying 5 or more items!
               </Alert>
             )}
 
