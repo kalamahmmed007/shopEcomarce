@@ -93,7 +93,6 @@ const CheckoutPage = () => {
     setProgress(0);
   };
 
-  // 🚗 Animate progress bar with car image
   useEffect(() => {
     if (showLoading) {
       const timer = setInterval(() => {
@@ -132,7 +131,6 @@ const CheckoutPage = () => {
   return (
     <Container className="py-4">
       <Row>
-        {/* LEFT: Shipping */}
         <Col md={8}>
           <h5 className="mb-3">Shipping Details</h5>
           <Form onSubmit={handleSubmit}>
@@ -231,14 +229,14 @@ const CheckoutPage = () => {
             {formData.paymentMethod === "cod" && (
               <Image
                 src="/src/assets/icons/cod.png"
-                width={180}
+                width={100}
                 className="mt-3"
                 alt="Cash on Delivery"
               />
             )}
 
             {formData.paymentMethod === "online" && (
-              <div className="mt-3">
+              <div className="mt-3 font-weight-bold">
                 <Alert variant="info">
                   You will be redirected to the selected payment gateway after confirming.
                 </Alert>
@@ -248,7 +246,7 @@ const CheckoutPage = () => {
                   name="onlineGateway"
                   label={
                     <div className="d-flex align-items-center gap-2">
-                      <Image src="/src/assets/icons/bkash.png" height={50} alt="Bkash" />
+                      <Image src="/src/assets/icons/bkash.png" height={40} alt="Bkash" />
                       <span>Bkash</span>
                     </div>
                   }
@@ -261,8 +259,8 @@ const CheckoutPage = () => {
                   id="ssl"
                   name="onlineGateway"
                   label={
-                    <div className="d-flex align-items-center gap-2 mt-2">
-                      <Image src="/src/assets/icons/ssl.png" height={40} alt="SSLCommerz" />
+                    <div className="d-flex align-items-center gap-2 mt-2 font-weight-bold">
+                      <Image src="/src/assets/icons/ssl.png" height={20} alt="SSLCommerz" />
                       <span>SSLCommerz</span>
                     </div>
                   }
