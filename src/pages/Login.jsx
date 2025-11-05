@@ -1,20 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../redux/authSlice';
-import { FaEnvelope, FaLock } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+
+// Assets
+import characterGif from '../assets/icon/loading.gif';
+import successImage from '../assets/icon/success.png';
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [typing, setTyping] = useState(false); // For GIF reaction
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+    // Detect typing in password field
+    if (e.target.name === 'password') {
+      setTyping(e.target.value.length > 0);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -23,10 +35,8 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // simulate delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // demo users list
       const demoUsers = [
         { email: 'user@example.com', password: 'password', name: 'John Doe' },
         { email: 'demo@example.com', password: '123456', name: 'Demo User' }
@@ -38,16 +48,17 @@ const Login = () => {
 
       if (!user) throw new Error('❌ Invalid email or password');
 
-      // Save user to Redux
       dispatch(loginSuccess(user));
-
-      // Save user to localStorage (for persistence)
       localStorage.setItem('user', JSON.stringify(user));
 
       setLoading(false);
+      setShowSuccess(true);
 
-      // redirect after login
-      navigate('/profile');
+
+      setTimeout(() => {
+        setShowSuccess(false);
+        navigate('/profile');
+      }, 2000);
     } catch (err) {
       setLoading(false);
       setError(err.message);
@@ -59,7 +70,22 @@ const Login = () => {
       <div className="border p-4 rounded shadow" style={{ width: '100%', maxWidth: 400 }}>
         <h3 className="text-center mb-4 fw-bold">Login to Your Account</h3>
 
-        {/* Error animation */}
+
+        <div className="text-center mb-3">
+          <img
+            src={characterGif}
+            alt="Animated character"
+            style={{
+              width: 180,
+              height: 180,
+              transition: 'all 0.3s ease',
+              transform: typing ? 'scale(1.1)' : 'scale(1)',
+              filter: typing ? 'brightness(1.2)' : 'brightness(1)'
+            }}
+          />
+        </div>
+
+
         <AnimatePresence>
           {error && (
             <motion.div
@@ -97,7 +123,7 @@ const Login = () => {
             <div className="input-group">
               <span className="input-group-text"><FaLock /></span>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 name="password"
                 className="form-control"
@@ -107,6 +133,13 @@ const Login = () => {
                 onChange={handleChange}
                 disabled={loading}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="input-group-text bg-white border-0"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
             </div>
           </div>
 
@@ -129,6 +162,22 @@ const Login = () => {
           </div>
         </form>
       </div>
+
+      {/* Success modal */}
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            className="position-fixed top-50 start-50 translate-middle bg-white p-4 rounded shadow text-center"
+            style={{ zIndex: 9999 }}
+          >
+            <img src={successImage} alt="Success" style={{ width: 100, height: 100 }} />
+            <h5 className="mt-3 text-success">Login Successful!</h5>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
