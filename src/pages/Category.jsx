@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import {
   Container,
   Row,
@@ -28,9 +28,9 @@ const CategoryPage = () => {
 
   // 🔹 Dummy data generator
   const dummyProducts = Array.from({ length: 45 }).map((_, i) => ({
-    _id: i + 1,
+    id: (i + 1).toString(), // ✅ use "id" instead of "_id"
     name: `${slug} Product ${i + 1}`,
-    image: `https://via.placeholder.com/300x300?text=Product+${i + 1}`,
+    image: `https://via.placeholder.com/300x300?text=${slug}+${i + 1}`,
     price: Math.floor(Math.random() * 1000 + 200),
     oldPrice: Math.floor(Math.random() * 1000 + 300),
     rating: Math.floor(Math.random() * 5) + 1,
@@ -58,10 +58,10 @@ const CategoryPage = () => {
   const paginatedProducts = products.slice(startIdx, startIdx + productsPerPage);
 
   // 🔹 Wishlist toggling
-  const isInWishlist = (id) => wishlistItems.some((item) => item._id === id);
+  const isInWishlist = (id) => wishlistItems.some((item) => item.id === id);
 
   const toggleWishlist = (product) => {
-    if (isInWishlist(product._id)) dispatch(removeFromWishlist(product._id));
+    if (isInWishlist(product.id)) dispatch(removeFromWishlist(product.id));
     else dispatch(addToWishlist(product));
   };
 
@@ -96,7 +96,7 @@ const CategoryPage = () => {
           <Row>
             {paginatedProducts.map((product) => (
               <Col
-                key={product._id}
+                key={product.id}
                 xs={6}
                 sm={6}
                 md={4}
@@ -105,17 +105,20 @@ const CategoryPage = () => {
               >
                 <Card className="shadow-sm border-0 h-100 position-relative card-hover">
                   <div className="position-relative">
-                    <Card.Img
-                      variant="top"
-                      src={product.image}
-                      className="rounded-top"
-                    />
+                    <Link to={`/product/${product.id}`}>
+                      <Card.Img
+                        variant="top"
+                        src={product.image}
+                        className="rounded-top"
+                      />
+                    </Link>
+
                     <Button
                       variant="light"
                       className="position-absolute top-0 end-0 m-2 rounded-circle shadow-sm"
                       onClick={() => toggleWishlist(product)}
                     >
-                      {isInWishlist(product._id) ? (
+                      {isInWishlist(product.id) ? (
                         <HeartFill color="red" size={18} />
                       ) : (
                         <Heart color="gray" size={18} />
@@ -124,9 +127,14 @@ const CategoryPage = () => {
                   </div>
 
                   <Card.Body className="text-center">
-                    <Card.Title className="fs-6 fw-semibold text-truncate">
-                      {product.name}
-                    </Card.Title>
+                    <Link
+                      to={`/product/${product.id}`}
+                      className="text-decoration-none text-dark"
+                    >
+                      <Card.Title className="fs-6 fw-semibold text-truncate">
+                        {product.name}
+                      </Card.Title>
+                    </Link>
 
                     <div className="d-flex justify-content-center align-items-center gap-2">
                       <span className="fw-bold text-dark">

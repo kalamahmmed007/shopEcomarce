@@ -128,12 +128,6 @@ const Login = () => {
             </small>
           </div>
         </form>
-
-        <div className="mt-4 text-center">
-          <p className="mb-1">Demo Accounts:</p>
-          <small>Email: user@example.com | Password: password</small><br />
-          <small>Email: demo@example.com | Password: 123456</small>
-        </div>
       </div>
     </div>
   );
