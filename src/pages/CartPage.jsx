@@ -153,7 +153,11 @@ const CartPage = () => {
             <Button
               variant="info"
               className="w-100 mt-3 text-white"
-              onClick={() => navigate('/checkout')}
+              disabled={cartItems.length === 0}
+              onClick={() => {
+                console.log("navigating to checkout");
+                navigate('/checkout');
+              }}
             >
               Checkout
             </Button>

@@ -28,25 +28,40 @@ const Footer = () => {
   const bgColor = '#1e1e1e';
   const textColor = '#f1f1f1';
   const linkHoverStyle = { transition: 'color 0.3s' };
-  const handleMouseEnter = (e) => { e.target.style.color = brandColor; };
-  const handleMouseLeave = (e) => { e.target.style.color = textColor; };
+  const handleMouseEnter = (e) => (e.target.style.color = brandColor);
+  const handleMouseLeave = (e) => (e.target.style.color = textColor);
 
-  // Demo: Fetch social counts (replace with real API fetches later)
+  // ✅ Safe fetch with fallback mock data
   useEffect(() => {
     const fetchSocialCounts = async () => {
       try {
-        const res = await fetch('/api/social-stats'); // real backend endpoint
+        const res = await fetch('/api/social-stats', { cache: 'no-store' });
+
+        // If backend doesn’t return JSON, throw error manually
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error('Invalid JSON response');
+        }
+
         const data = await res.json();
         setSocialCounts({
-          facebook: data.facebook,
-          instagram: data.instagram,
-          youtube: data.youtube,
-          fbGroup: data.fbGroup,
+          facebook: data.facebook ?? 2350,
+          instagram: data.instagram ?? 4200,
+          youtube: data.youtube ?? 1800,
+          fbGroup: data.fbGroup ?? 600,
         });
       } catch (err) {
-        console.error('Failed to fetch social counts', err);
+        console.warn('⚠️ Using mock social data (API failed):', err.message);
+        // Fallback demo data
+        setSocialCounts({
+          facebook: 2350,
+          instagram: 4200,
+          youtube: 1800,
+          fbGroup: 600,
+        });
       }
     };
+
     fetchSocialCounts();
   }, []);
 
@@ -94,13 +109,23 @@ const Footer = () => {
             <h5 className="fw-bold mb-3 text-white">Customer Support</h5>
             <p className="small text-light d-flex align-items-center mb-2">
               <FaPhoneAlt className="me-2" />
-              <a href="tel:+880123456789" style={{ color: textColor, textDecoration: 'none' }} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+              <a
+                href="tel:+880123456789"
+                style={{ color: textColor, textDecoration: 'none' }}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
                 +880 1234 567 890
               </a>
             </p>
             <p className="small text-light d-flex align-items-center">
               <FaEnvelope className="me-2" />
-              <a href="mailto:royaleattire27@gmail.com" style={{ color: textColor, textDecoration: 'none' }} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+              <a
+                href="mailto:royaleattire27@gmail.com"
+                style={{ color: textColor, textDecoration: 'none' }}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
                 royaleattire27@gmail.com
               </a>
             </p>
@@ -117,7 +142,13 @@ const Footer = () => {
                 const labels = ['Home', 'Shop', 'About', 'Contact'];
                 return (
                   <li key={path} className="mb-1">
-                    <Link to={path} className="text-decoration-none" style={{ color: textColor, ...linkHoverStyle }} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                    <Link
+                      to={path}
+                      className="text-decoration-none"
+                      style={{ color: textColor, ...linkHoverStyle }}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                    >
                       {labels[i]}
                     </Link>
                   </li>
@@ -134,7 +165,13 @@ const Footer = () => {
                 const labels = ['FAQ', 'Returns', 'Shipping', 'Privacy Policy'];
                 return (
                   <li key={path} className="mb-1">
-                    <Link to={path} className="text-decoration-none" style={{ color: textColor, ...linkHoverStyle }} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                    <Link
+                      to={path}
+                      className="text-decoration-none"
+                      style={{ color: textColor, ...linkHoverStyle }}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                    >
                       {labels[i]}
                     </Link>
                   </li>
@@ -143,13 +180,23 @@ const Footer = () => {
             </ul>
           </Col>
 
-          {/* Newsletter & Social */}
+          {/* Newsletter + Socials */}
           <Col md={4}>
             <h6 className="fw-bold mb-3 text-white">Subscribe for Updates</h6>
             <Form onSubmit={handleSubscribe}>
               <InputGroup>
-                <Form.Control type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                <Button variant="primary" type="submit" style={{ backgroundColor: brandColor, borderColor: brandColor }}>
+                <Form.Control
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <Button
+                  variant="primary"
+                  type="submit"
+                  style={{ backgroundColor: brandColor, borderColor: brandColor }}
+                >
                   Subscribe
                 </Button>
               </InputGroup>
@@ -157,13 +204,19 @@ const Footer = () => {
 
             <AnimatePresence>
               {subscribed && (
-                <motion.small initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }} className="text-success mt-2 d-block">
+                <motion.small
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="text-success mt-2 d-block"
+                >
                   ✅ Thank you for subscribing!
                 </motion.small>
               )}
             </AnimatePresence>
 
-            {/* Social Boxes */}
+            {/* Social Stats */}
             <div className="mt-4 d-flex flex-wrap gap-2">
               {socialPlatforms.map((platform, i) => (
                 <a
@@ -185,9 +238,13 @@ const Footer = () => {
                     transition: 'transform 0.2s',
                   }}
                 >
-                  <div className="mb-1" style={{ fontSize: '1.3rem' }}>{platform.icon}</div>
+                  <div className="mb-1" style={{ fontSize: '1.3rem' }}>
+                    {platform.icon}
+                  </div>
                   <div style={{ fontSize: '0.95rem' }}>{platform.name}</div>
-                  <small style={{ fontWeight: 500, fontSize: '0.8rem' }}>{platform.count.toLocaleString()} {platform.label}</small>
+                  <small style={{ fontWeight: 500, fontSize: '0.8rem' }}>
+                    {platform.count.toLocaleString()} {platform.label}
+                  </small>
                 </a>
               ))}
             </div>

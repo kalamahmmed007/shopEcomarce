@@ -12,9 +12,9 @@ import {
   ProgressBar,
 } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { clearCart } from "../redux/cartSlice";
+import { motion } from "framer-motion";
 
 const CheckoutPage = () => {
   const dispatch = useDispatch();
