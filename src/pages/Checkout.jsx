@@ -183,7 +183,7 @@ const CheckoutPage = () => {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Delivery Type *</Form.Label>
+              <Form.Label><h5 className="mt-4 mb-3">Delivery Type</h5></Form.Label>
               <div>
                 <Form.Check
                   inline
@@ -206,34 +206,18 @@ const CheckoutPage = () => {
               </div>
             </Form.Group>
 
-            <h5 className="mt-4">Payment Method</h5>
-            <Form.Check
-              type="radio"
-              label="Cash on Delivery"
-              name="paymentMethod"
-              value="cod"
-              checked={formData.paymentMethod === "cod"}
-              onChange={handleChange}
-              inline
-            />
-            <Form.Check
-              type="radio"
-              label="Online Payment"
-              name="paymentMethod"
-              value="online"
-              checked={formData.paymentMethod === "online"}
-              onChange={handleChange}
-              inline
-            />
+            <h5 className="mt-4 mb-3">Payment Method</h5>
+            <div className={`p-3 border rounded text-center cursor-pointer ${formData.paymentMethod === "cod" ? "border-primary bg-light" : ""}`} style={{ width: "140px" }}
+              onClick={() => setFormData((prev) => ({ ...prev, paymentMethod: "cod" }))}>
+              <Image src="/src/assets/icons/cod.png" width={80} alt="Cash on Delivery" />
+              <div>Cash on Delivery</div>
+            </div>
+            <div className={`p-3 border rounded text-center cursor-pointer mt-3 ${formData.paymentMethod === "online" ? "border-primary bg-light" : ""}`} style={{ width: "140px" }}
+              onClick={() => setFormData((prev) => ({ ...prev, paymentMethod: "online" }))}>
+              <Image src="/src/assets/icons/online-payment.png" width={80} alt="Online Payment" />
+              <div>Online Payment</div>
+            </div>
 
-            {formData.paymentMethod === "cod" && (
-              <Image
-                src="/src/assets/icons/cod.png"
-                width={100}
-                className="mt-3"
-                alt="Cash on Delivery"
-              />
-            )}
 
             {formData.paymentMethod === "online" && (
               <div className="mt-3 font-weight-bold">
