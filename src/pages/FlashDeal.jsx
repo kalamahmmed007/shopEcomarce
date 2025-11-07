@@ -80,125 +80,162 @@ const FlashDealPage = () => {
   const categories = [...new Set(products?.map((p) => p.category))];
 
   return (
-    <Container className="my-5">
-      <h2 className="mb-3 text-center fw-bold text-uppercase">Flash Deal</h2>
-
-      {/* Global Countdown */}
-      <div className="text-center mb-5 fs-4">
-        Deal ends in:{" "}
-        <Badge bg="danger" className="fs-5 px-3 py-2">
-          {formatTime(FLASH_DEAL_END_TIME - new Date().getTime())}
+    <div className="flash-page-wrapper">
+      {/* Hero Header */}
+      <div
+        className="text-center text-white py-5 mb-5"
+        style={{
+          background: "linear-gradient(90deg, #FF6F00, #FF3D00)",
+          borderRadius: "20px",
+          boxShadow: "0 4px 20px rgba(255, 111, 0, 0.4)",
+        }}
+      >
+        <h1 className="fw-bold display-5">⚡ Flash Deals</h1>
+        <p className="fs-5 mb-2 opacity-90">
+          Grab your favorites before the time runs out!
+        </p>
+        <Badge
+          bg="light"
+          text="dark"
+          className="fs-4 py-2 px-4 mt-2 shadow-sm rounded-pill"
+        >
+          Deal Ends In ⏰ {formatTime(FLASH_DEAL_END_TIME - new Date().getTime())}
         </Badge>
       </div>
 
-      {/* Filters */}
-      <Row className="mb-4 justify-content-center">
-        <Col xs={12} sm={6} md={4} lg={3} className="mb-3">
-          <Form.Select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            aria-label="Filter by category"
-          >
-            <option value="">All Categories</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </Form.Select>
-        </Col>
-        <Col xs={12} sm={6} md={4} lg={3} className="mb-3">
-          <Form.Select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            aria-label="Sort products"
-          >
-            <option value="popularity">Sort by Popularity</option>
-            <option value="priceLow">Price: Low to High</option>
-            <option value="priceHigh">Price: High to Low</option>
-            <option value="rating">Top Rated</option>
-          </Form.Select>
-        </Col>
-      </Row>
-
-      {/* Products */}
-      {loading ? (
-        <div className="text-center my-5">
-          <Spinner animation="border" variant="warning" />
-        </div>
-      ) : filteredProducts.length === 0 ? (
-        <p className="text-center fs-5">No flash deal products found.</p>
-      ) : (
-        <Row className="g-4">
-          {filteredProducts.map((product) => {
-            // Each product countdown timer (for demo same end time, can be dynamic)
-            const productCountdown = useCountdown(
-              product.flashDealEndTime || FLASH_DEAL_END_TIME
-            );
-
-            return (
-              <Col
-                key={product.id}
-                xs={12}
-                sm={6}
-                md={4}
-                lg={3}
-                className="d-flex"
-              >
-                <Card className="shadow-sm flex-fill d-flex flex-column">
-                  <div className="position-relative overflow-hidden" style={{ height: 220 }}>
-                    <Card.Img
-                      src={product.image || "/images/placeholder.jpg"}
-                      alt={product.name}
-                      className="h-100 w-100 object-fit-cover"
-                    />
-                    <Badge
-                      bg="danger"
-                      className="position-absolute top-0 start-0 m-2 px-2 py-1 fs-6"
-                    >
-                      Flash Deal
-                    </Badge>
-                    {product.stock && product.stock < 5 && (
-                      <Badge
-                        bg="warning"
-                        text="dark"
-                        className="position-absolute top-0 end-0 m-2 px-2 py-1 fs-6"
-                      >
-                        Only {product.stock} left
-                      </Badge>
-                    )}
-                  </div>
-                  <Card.Body className="d-flex flex-column">
-                    <Card.Title className="fs-6 fw-semibold">{product.name}</Card.Title>
-
-                    <div className="mb-2">
-                      <span className="fw-bold fs-5 text-danger">
-                        Tk. {product.price}
-                      </span>{" "}
-                      <del className="text-muted">{product.originalPrice && `Tk. ${product.originalPrice}`}</del>
-                    </div>
-
-                    {/* Per product countdown */}
-                    <div className="mb-3 text-center text-danger fs-6 fw-semibold">
-                      Deal ends in: {formatTime(productCountdown)}
-                    </div>
-
-                    <Button
-                      variant="warning"
-                      className="mt-auto"
-                      onClick={() => dispatch(addToCart(product))}
-                      aria-label={`Add ${product.name} to cart`}
-                    >
-                      Add to Cart
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Col>
-            );
-          })}
+      <Container>
+        {/* Filters */}
+        <Row className="mb-4 justify-content-center">
+          <Col xs={12} sm={6} md={4} lg={3} className="mb-3">
+            <Form.Select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              aria-label="Filter by category"
+              className="shadow-sm border-0 rounded-3"
+            >
+              <option value="">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </Form.Select>
+          </Col>
+          <Col xs={12} sm={6} md={4} lg={3} className="mb-3">
+            <Form.Select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              aria-label="Sort products"
+              className="shadow-sm border-0 rounded-3"
+            >
+              <option value="popularity">Sort by Popularity</option>
+              <option value="priceLow">Price: Low to High</option>
+              <option value="priceHigh">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+            </Form.Select>
+          </Col>
         </Row>
-      )}
-    </Container>
+
+        {/* Products */}
+        {loading ? (
+          <div className="text-center my-5">
+            <Spinner animation="border" variant="warning" />
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <p className="text-center fs-5 text-muted">
+            No flash deal products found 😢
+          </p>
+        ) : (
+          <Row className="g-4">
+            {filteredProducts.map((product) => {
+              const productCountdown = useCountdown(
+                product.flashDealEndTime || FLASH_DEAL_END_TIME
+              );
+
+              return (
+                <Col
+                  key={product.id}
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  className="d-flex"
+                >
+                  <Card
+                    className="shadow-lg border-0 flex-fill d-flex flex-column hover-glow"
+                    style={{
+                      borderRadius: "15px",
+                      overflow: "hidden",
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    <div
+                      className="position-relative"
+                      style={{ height: 220, overflow: "hidden" }}
+                    >
+                      <Card.Img
+                        src={product.image || "/images/placeholder.jpg"}
+                        alt={product.name}
+                        className="h-100 w-100 object-fit-cover"
+                      />
+                      <Badge
+                        bg="danger"
+                        className="position-absolute top-0 start-0 m-2 px-3 py-1 fs-6 rounded-pill"
+                      >
+                        Flash Deal
+                      </Badge>
+                      {product.stock && product.stock < 5 && (
+                        <Badge
+                          bg="warning"
+                          text="dark"
+                          className="position-absolute top-0 end-0 m-2 px-3 py-1 fs-6 rounded-pill"
+                        >
+                          Only {product.stock} left
+                        </Badge>
+                      )}
+                    </div>
+
+                    <Card.Body className="d-flex flex-column">
+                      <Card.Title className="fs-6 fw-bold mb-2 text-center text-truncate">
+                        {product.name}
+                      </Card.Title>
+
+                      <div className="text-center mb-2">
+                        <span className="fw-bold fs-5 text-danger">
+                          Tk. {product.price}
+                        </span>{" "}
+                        <del className="text-muted fs-6">
+                          {product.originalPrice && `Tk. ${product.originalPrice}`}
+                        </del>
+                      </div>
+
+                      <div className="mb-3 text-center text-danger fw-semibold">
+                        ⏱ {formatTime(productCountdown)}
+                      </div>
+
+                      <Button
+                        variant="warning"
+                        className="mt-auto fw-semibold shadow-sm"
+                        onClick={() => dispatch(addToCart(product))}
+                      >
+                        🛒 Add to Cart
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
+        )}
+      </Container>
+
+      <style>{`
+        .hover-glow:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 25px rgba(255, 111, 0, 0.3);
+        }
+      `}</style>
+    </div>
   );
 };
 
