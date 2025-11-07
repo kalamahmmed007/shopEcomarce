@@ -126,8 +126,7 @@ const faqData = [
       },
       {
         question: 'Can I combine multiple offers?',
-        answer:
-          'Only one coupon or promotional offer can be applied per order.',
+        answer: 'Only one coupon or promotional offer can be applied per order.',
       },
       {
         question: 'When do you have sales or special promotions?',
@@ -146,8 +145,7 @@ const faqData = [
       },
       {
         question: 'What are your customer service hours?',
-        answer:
-          'Our support team is available Sunday to Friday, 9 AM to 6 PM.',
+        answer: 'Our support team is available Sunday to Friday, 9 AM to 6 PM.',
       },
     ],
   },
@@ -156,29 +154,49 @@ const faqData = [
 const FaqPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Flatten all Q&A for search
   const allQAs = faqData.flatMap((cat) =>
     cat.qas.map((qa) => ({ ...qa, category: cat.category }))
   );
 
-  // Filter QAs based on search term
   const filteredQAs = searchTerm
     ? allQAs.filter(
-        (qa) =>
-          qa.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          qa.answer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          qa.category.toLowerCase().includes(searchTerm.toLowerCase())
-      )
+      (qa) =>
+        qa.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        qa.answer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        qa.category.toLowerCase().includes(searchTerm.toLowerCase())
+    )
     : null;
 
   return (
-    <Container className="my-5" style={{ maxWidth: 900 }}>
-      <h1 className="mb-4 fw-bold text-center" style={{ color: '#FF6F00' }}>
-        Frequently Asked Questions
-      </h1>
+    <Container className="my-5" style={{ maxWidth: 950 }}>
+      {/* Header Section */}
+      <div
+        className="p-4 text-center rounded-4 shadow-sm mb-5"
+        style={{
+          background: 'linear-gradient(90deg, #FF6F00, #FFA726)',
+          color: 'white',
+        }}
+      >
+        <h1 className="fw-bold mb-1">Frequently Asked Questions</h1>
+        <p className="mb-0 fw-semibold">
+          Got questions? We’ve got all the answers you need 💬
+        </p>
+      </div>
 
-      <InputGroup className="mb-4">
-        <InputGroup.Text id="search-faq" style={{ backgroundColor: '#FF6F00', color: 'white' }}>
+      {/* Search Bar */}
+      <InputGroup
+        className="mb-5 shadow-sm rounded-4"
+        style={{ overflow: 'hidden', border: '1px solid #ffb74d' }}
+      >
+        <InputGroup.Text
+          id="search-faq"
+          style={{
+            backgroundColor: '#FF6F00',
+            color: 'white',
+            border: 'none',
+            fontSize: '1.2rem',
+          }}
+        >
           🔍
         </InputGroup.Text>
         <Form.Control
@@ -188,36 +206,88 @@ const FaqPage = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           spellCheck={false}
+          style={{
+            border: 'none',
+            padding: '1rem',
+            fontSize: '1rem',
+          }}
         />
       </InputGroup>
 
+      {/* FAQ Accordion */}
       <Accordion defaultActiveKey="0" alwaysOpen flush>
-        {searchTerm
-          ? filteredQAs.length > 0 ? (
-              filteredQAs.map((qa, idx) => (
-                <Accordion.Item eventKey={`${idx}`} key={`${qa.category}-${idx}`}>
-                  <Accordion.Header>{qa.question} <small className="text-muted ms-2">({qa.category})</small></Accordion.Header>
-                  <Accordion.Body>{qa.answer}</Accordion.Body>
-                </Accordion.Item>
-              ))
-            ) : (
-              <p className="text-center mt-4">No results found for "{searchTerm}".</p>
-            )
-          : faqData.map((cat, catIdx) => (
-              <Accordion.Item eventKey={`${catIdx}`} key={cat.category}>
-                <Accordion.Header>{cat.category}</Accordion.Header>
-                <Accordion.Body>
-                  <Accordion alwaysOpen flush>
-                    {cat.qas.map((qa, idx) => (
-                      <Accordion.Item eventKey={`${catIdx}-${idx}`} key={qa.question}>
-                        <Accordion.Header>{qa.question}</Accordion.Header>
-                        <Accordion.Body>{qa.answer}</Accordion.Body>
-                      </Accordion.Item>
-                    ))}
-                  </Accordion>
+        {searchTerm ? (
+          filteredQAs && filteredQAs.length > 0 ? (
+            filteredQAs.map((qa, idx) => (
+              <Accordion.Item
+                eventKey={`${idx}`}
+                key={`${qa.category}-${idx}`}
+                className="mb-2 shadow-sm border-0 rounded-3"
+              >
+                <Accordion.Header>
+                  <div className="fw-semibold">
+                    {qa.question}
+                    <small className="text-muted ms-2">({qa.category})</small>
+                  </div>
+                </Accordion.Header>
+                <Accordion.Body
+                  style={{
+                    backgroundColor: '#fffdf7',
+                    borderTop: '1px solid #ffe0b2',
+                    fontSize: '0.95rem',
+                  }}
+                >
+                  {qa.answer}
                 </Accordion.Body>
               </Accordion.Item>
-            ))}
+            ))
+          ) : (
+            <p className="text-center mt-4 text-muted">
+              No results found for “{searchTerm}”.
+            </p>
+          )
+        ) : (
+          faqData.map((cat, catIdx) => (
+            <Accordion.Item
+              eventKey={`${catIdx}`}
+              key={cat.category}
+              className="mb-3 border-0 shadow-sm rounded-3"
+            >
+              <Accordion.Header>
+                <span
+                  className="fw-bold text-uppercase"
+                  style={{ color: '#FF6F00' }}
+                >
+                  {cat.category}
+                </span>
+              </Accordion.Header>
+              <Accordion.Body className="bg-light rounded-bottom-3">
+                <Accordion alwaysOpen flush>
+                  {cat.qas.map((qa, idx) => (
+                    <Accordion.Item
+                      eventKey={`${catIdx}-${idx}`}
+                      key={qa.question}
+                      className="mb-2 border-0 rounded-3"
+                    >
+                      <Accordion.Header>
+                        <span className="fw-semibold">{qa.question}</span>
+                      </Accordion.Header>
+                      <Accordion.Body
+                        style={{
+                          backgroundColor: '#fffdf7',
+                          borderTop: '1px solid #ffe0b2',
+                          fontSize: '0.95rem',
+                        }}
+                      >
+                        {qa.answer}
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  ))}
+                </Accordion>
+              </Accordion.Body>
+            </Accordion.Item>
+          ))
+        )}
       </Accordion>
     </Container>
   );

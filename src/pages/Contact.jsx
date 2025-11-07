@@ -20,7 +20,6 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate API call delay
     setTimeout(() => {
       console.log('Contact form submitted:', formData);
       setSubmitted(true);
@@ -32,19 +31,46 @@ const Contact = () => {
   return (
     <div className="container py-5 d-flex justify-content-center">
       <div
-        className="bg-white shadow-lg p-5 rounded-4 w-100"
-        style={{ maxWidth: 700, border: '1px solid #f0f0f0' }}
+        className="bg-white shadow-lg p-5 rounded-4 w-100 position-relative"
+        style={{
+          maxWidth: 700,
+          border: '1px solid #eee',
+          transition: 'all 0.3s ease',
+        }}
       >
+        {/* Gradient top bar */}
+        <div
+          style={{
+            height: '6px',
+            width: '100%',
+            background: 'linear-gradient(90deg, #FF6F00, #FFA726)',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            borderTopLeftRadius: '1rem',
+            borderTopRightRadius: '1rem',
+          }}
+        ></div>
+
         <h2
-          className="text-center mb-4"
-          style={{ color: '#FF6F00', fontWeight: 700 }}
+          className="text-center mb-4 mt-2"
+          style={{
+            color: '#FF6F00',
+            fontWeight: 700,
+            fontSize: '2rem',
+            letterSpacing: '1px',
+          }}
         >
           Contact Us
         </h2>
 
         {submitted && (
-          <div className="alert alert-success text-center" role="alert">
-            Thank you for your message! We'll get back to you soon.
+          <div
+            className="alert alert-success text-center fw-semibold fade show"
+            role="alert"
+            style={{ borderRadius: '12px' }}
+          >
+            🎉 Message sent! We’ll reach out soon.
           </div>
         )}
 
@@ -57,12 +83,19 @@ const Contact = () => {
               id="name"
               name="name"
               type="text"
-              className="form-control form-control-lg"
+              className="form-control form-control-lg border-0 shadow-sm"
+              style={{
+                backgroundColor: '#f9f9f9',
+                borderRadius: '12px',
+                transition: '0.3s ease',
+              }}
               required
               value={formData.name}
               onChange={handleChange}
               placeholder="Your full name"
               disabled={loading}
+              onFocus={(e) => (e.target.style.backgroundColor = '#fff')}
+              onBlur={(e) => (e.target.style.backgroundColor = '#f9f9f9')}
             />
           </div>
 
@@ -74,12 +107,18 @@ const Contact = () => {
               id="email"
               name="email"
               type="email"
-              className="form-control form-control-lg"
+              className="form-control form-control-lg border-0 shadow-sm"
+              style={{
+                backgroundColor: '#f9f9f9',
+                borderRadius: '12px',
+              }}
               required
               value={formData.email}
               onChange={handleChange}
               placeholder="name@example.com"
               disabled={loading}
+              onFocus={(e) => (e.target.style.backgroundColor = '#fff')}
+              onBlur={(e) => (e.target.style.backgroundColor = '#f9f9f9')}
             />
           </div>
 
@@ -91,20 +130,40 @@ const Contact = () => {
               id="message"
               name="message"
               rows="6"
-              className="form-control form-control-lg"
+              className="form-control form-control-lg border-0 shadow-sm"
+              style={{
+                backgroundColor: '#f9f9f9',
+                borderRadius: '12px',
+                resize: 'vertical',
+              }}
               required
               value={formData.message}
               onChange={handleChange}
               placeholder="Write your message here..."
               disabled={loading}
-              style={{ resize: 'vertical' }}
+              onFocus={(e) => (e.target.style.backgroundColor = '#fff')}
+              onBlur={(e) => (e.target.style.backgroundColor = '#f9f9f9')}
             ></textarea>
           </div>
 
           <div className="d-grid">
             <button
               type="submit"
-              className="btn btn-warning text-white btn-lg fw-semibold"
+              className="btn btn-lg fw-semibold text-white"
+              style={{
+                background:
+                  'linear-gradient(90deg, #FF6F00 0%, #FFA726 100%)',
+                border: 'none',
+                borderRadius: '12px',
+                boxShadow: '0 4px 10px rgba(255,111,0,0.3)',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) =>
+                (e.target.style.transform = 'translateY(-2px)')
+              }
+              onMouseLeave={(e) =>
+                (e.target.style.transform = 'translateY(0)')
+              }
               disabled={loading}
             >
               {loading ? (
