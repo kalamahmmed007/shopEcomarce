@@ -309,7 +309,7 @@ const CheckoutPage = () => {
           </Form>
         </Col>
 
-        {/* RIGHT: Summary */}
+
         <Col md={4}>
           <div className="bg-light p-3 rounded shadow-sm">
             <h5>Order Summary</h5>
