@@ -9,13 +9,13 @@ import profileReducer from './profileSlice';
 
 export const store = configureStore({
   reducer: {
-
-    products: productReducer,
+    products: productReducer,   // main product state
     cart: cartReducer,
     auth: authReducer,
     wishlist: wishlistReducer,
-    product: productReducer,
     order: orderReducer,
     profile: profileReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+  devTools: process.env.NODE_ENV !== 'production',
 });

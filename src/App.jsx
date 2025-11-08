@@ -28,6 +28,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
 import FlashDealPage from './pages/FlashDeal';
 import SpecialOfferPage from "./pages/SpecialOfferPage";
+import BestSellingPage from "./pages/BestSellingPage";
 
 const CategoryWithProductList = () => {
   return (
@@ -46,6 +47,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/category/:slug" element={<CategoryWithProductList />} />
+          <Route path="/best-sellers" element={<BestSellingPage />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<Checkout />} />
