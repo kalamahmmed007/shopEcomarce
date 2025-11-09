@@ -143,17 +143,19 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Desktop Navbar */}
+      {/* Desktop Navbar -  */}
       <BsNavbar
-        bg="white"
-        expand="md"
-        className="shadow-sm py-2 d-none d-md-block sticky-top border-bottom"
-        style={{ zIndex: 1040 }}
+        className="shadow-sm py-2 d-none d-md-block sticky-top"
+        style={{
+          backgroundColor: '#1a2332',
+          zIndex: 1040
+        }}
       >
         <Container fluid="lg" className="align-items-center">
+          {/* Logo */}
           <Link
             to="/"
-            className="navbar-brand fw-bold fs-3 d-flex align-items-center text-dark"
+            className="navbar-brand fw-bold fs-4 d-flex align-items-center text-white"
           >
             <img
               src="/src/assets/logo/royelattire.png"
@@ -165,10 +167,11 @@ const Navbar = () => {
             RoyelAttire
           </Link>
 
+          {/* Search Bar */}
           <Form
             onSubmit={handleSearch}
-            className="d-flex align-items-center flex-grow-1 mx-4"
-            style={{ maxWidth: 600 }}
+            className="flex-grow-1 mx-4"
+            style={{ maxWidth: 500 }}
           >
             <div className="input-group">
               <FormControl
@@ -176,64 +179,105 @@ const Navbar = () => {
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="rounded-start"
+                className="border-0"
+                style={{ backgroundColor: 'white' }}
               />
               <Button
                 type="submit"
-                variant="outline-secondary"
-                className="input-group-text"
+                style={{
+                  backgroundColor: '#ff6b35',
+                  border: 'none'
+                }}
               >
-                <img src={SearchIcon} alt="Search" style={{ width: 16, height: 16 }} />
+                <img src={SearchIcon} alt="Search" style={{ width: 18, height: 18, filter: 'brightness(0) invert(1)' }} />
               </Button>
-            </div>
-
-            <div className="d-flex align-items-center ms-3 gap-3">
-              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  to="/flash-deal"
-                  className="d-flex align-items-center gap-1 text-decoration-none text-dark"
-                >
-                  <img src={FlashIcon} alt="Flash" width={36} height={36} />
-                  <span className="small fw-semibold">Flash Deal</span>
-                </Link>
-              </motion.div>
-
-              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                <Link
-                  to="/special-offer"
-                  className="d-flex align-items-center gap-1 text-decoration-none text-dark"
-                >
-                  <img src={OfferIcon} alt="Offer" width={30} height={30} />
-                  <span className="small fw-semibold">Special Offer</span>
-                </Link>
-              </motion.div>
             </div>
           </Form>
 
-          <Nav className="align-items-center gap-3">
-            <Link to="/wishlist" className="nav-link position-relative text-dark">
-              <img src={HeartIcon} alt="Wishlist" width={28} height={28} />
+          {/* Action Buttons */}
+          <Nav className="align-items-center gap-2">
+            {/* Flash Deal */}
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                to="/flash-deal"
+                className="btn btn-sm px-3 py-2 text-white fw-semibold text-decoration-none d-flex align-items-center gap-2"
+                style={{
+                  backgroundColor: '#2c3e50',
+                  border: 'none',
+                  borderRadius: '6px'
+                }}
+              >
+                <img src={FlashIcon} alt="Flash" width={20} height={20} />
+                <span className="small">11.11<br />Offers</span>
+              </Link>
+            </motion.div>
+
+            {/* PC Builder */}
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Link
+                to="/special-offer"
+                className="btn btn-sm px-3 py-2 text-white fw-semibold text-decoration-none d-flex align-items-center gap-2"
+                style={{
+                  backgroundColor: '#2c3e50',
+                  border: 'none',
+                  borderRadius: '6px'
+                }}
+              >
+                <img src={OfferIcon} alt="Offer" width={20} height={20} />
+                <span className="small">Special<br />Offer</span>
+              </Link>
+            </motion.div>
+
+            {/* Wishlist */}
+            <Link
+              to="/wishlist"
+              className="nav-link position-relative"
+              style={{ padding: '8px' }}
+            >
+              <img src={HeartIcon} alt="Wishlist" width={24} height={24} style={{ filter: 'brightness(0) invert(1)' }} />
               {wishlistItems.length > 0 && (
-                <Badge pill bg="danger" className="position-absolute top-0 start-100 translate-middle">
+                <Badge
+                  pill
+                  bg="danger"
+                  className="position-absolute top-0 start-100 translate-middle"
+                  style={{ fontSize: '0.65rem' }}
+                >
                   {wishlistItems.length}
                 </Badge>
               )}
             </Link>
 
-            <Link to="/cart" className="nav-link position-relative text-dark">
-              <img src={CartIcon} alt="Cart" width={28} height={28} />
+            {/* Cart */}
+            <Link
+              to="/cart"
+              className="nav-link position-relative"
+              style={{ padding: '8px' }}
+            >
+              <img src={CartIcon} alt="Cart" width={24} height={24} style={{ filter: 'brightness(0) invert(1)' }} />
               {totalItems > 0 && (
-                <Badge pill bg="danger" className="position-absolute top-0 start-100 translate-middle">
+                <Badge
+                  pill
+                  bg="danger"
+                  className="position-absolute top-0 start-100 translate-middle"
+                  style={{ fontSize: '0.65rem' }}
+                >
                   {totalItems}
                 </Badge>
               )}
             </Link>
 
+            {/* User Account */}
             {user ? (
               <NavDropdown
-                title={<img src={UserIcon} alt="User" width={22} height={22} />}
+                title={
+                  <span className="text-white d-flex align-items-center gap-1">
+                    <img src={UserIcon} alt="User" width={20} height={20} style={{ filter: 'brightness(0) invert(1)' }} />
+                    <span className="small">Account</span>
+                  </span>
+                }
                 id="user-dropdown"
                 align="end"
+                className="text-white"
               >
                 <Link to="/orders" className="dropdown-item">My Orders</Link>
                 <Link to="/profile" className="dropdown-item">Profile</Link>
@@ -244,8 +288,17 @@ const Navbar = () => {
               </NavDropdown>
             ) : (
               <Link to="/login" className="nav-link">
-                <Button variant="outline-dark" size="sm" className="rounded-pill px-3">
-                  Login
+                <Button
+                  size="sm"
+                  className="px-3 fw-semibold"
+                  style={{
+                    backgroundColor: '#ff6b35',
+                    border: 'none',
+                    borderRadius: '6px'
+                  }}
+                >
+                  <img src={UserIcon} alt="User" width={16} height={16} style={{ filter: 'brightness(0) invert(1)' }} className="me-1" />
+                  Login/Register
                 </Button>
               </Link>
             )}
@@ -254,9 +307,15 @@ const Navbar = () => {
       </BsNavbar>
 
       {/* Category Bar - Desktop */}
-      <nav className="bg-info d-none d-md-block border-top shadow-sm" style={{ top: '96px', zIndex: 1030 }}>
+      <nav
+        className="d-none d-md-block shadow-sm"
+        style={{
+          backgroundColor: '#2c3e50',
+          zIndex: 1030
+        }}
+      >
         <Container fluid="lg">
-          <Nav className="justify-content-center">
+          <Nav className="justify-content-start">
             {mainCategories.map((cat, idx) =>
               cat.hasDropdown ? (
                 <NavDropdown
@@ -264,15 +323,16 @@ const Navbar = () => {
                   title={
                     <span
                       className={`fw-semibold ${isActiveCategory(cat.slug)
-                        ? 'text-white bg-primary px-2 rounded'
-                        : 'text-dark'
+                        ? 'text-warning'
+                        : 'text-white'
                         }`}
+                      style={{ fontSize: '0.9rem' }}
                     >
                       {cat.name}
                     </span>
                   }
                   id={`cat-dropdown-${idx}`}
-                  className="px-3"
+                  className="px-2"
                   onMouseEnter={() => setHoveredDropdown(idx)}
                   onMouseLeave={() => setHoveredDropdown(null)}
                   show={hoveredDropdown === idx}
@@ -296,10 +356,11 @@ const Navbar = () => {
                 <Nav.Link
                   key={cat.slug}
                   onClick={() => handleMobileNav(`/category/${cat.slug}`)}
-                  className={`text-uppercase fw-semibold px-3 ${isActiveCategory(cat.slug)
-                    ? 'text-white bg-primary rounded px-2'
-                    : 'text-dark'
+                  className={`fw-semibold px-3 ${isActiveCategory(cat.slug)
+                    ? 'text-warning'
+                    : 'text-white'
                     }`}
+                  style={{ fontSize: '0.9rem' }}
                 >
                   {cat.name}
                 </Nav.Link>
@@ -309,8 +370,8 @@ const Navbar = () => {
         </Container>
       </nav>
 
-      {/* 🟧 Mobile Navbar */}
-      <div className="d-md-none sticky-top shadow-sm" style={{ backgroundColor: 'orange', zIndex: 1040 }}>
+      {/* Mobile Navbar */}
+      <div className="d-md-none sticky-top shadow-sm" style={{ backgroundColor: '#1a2332', zIndex: 1040 }}>
         {/* Top Bar */}
         <div className="d-flex justify-content-between align-items-center py-2 px-3">
           <img
@@ -320,6 +381,7 @@ const Navbar = () => {
             height={28}
             data-bs-toggle="offcanvas"
             data-bs-target="#mobileSidebar"
+            style={{ filter: 'brightness(0) invert(1)', cursor: 'pointer' }}
           />
 
           <Link to="/" className="fw-bold text-white fs-5 text-decoration-none">
@@ -333,14 +395,16 @@ const Navbar = () => {
               width={24}
               height={24}
               onClick={() => handleMobileNav('/wishlist')}
+              style={{ filter: 'brightness(0) invert(1)', cursor: 'pointer' }}
             />
-            <div className="position-relative" onClick={() => handleMobileNav('/cart')}>
-              <img src={CartIcon} alt="Cart" width={24} height={24} />
+            <div className="position-relative" onClick={() => handleMobileNav('/cart')} style={{ cursor: 'pointer' }}>
+              <img src={CartIcon} alt="Cart" width={24} height={24} style={{ filter: 'brightness(0) invert(1)' }} />
               {totalItems > 0 && (
                 <Badge
                   pill
                   bg="danger"
                   className="position-absolute top-0 start-100 translate-middle"
+                  style={{ fontSize: '0.65rem' }}
                 >
                   {totalItems}
                 </Badge>
@@ -351,15 +415,7 @@ const Navbar = () => {
 
         {/* Search Bar */}
         <div className="px-3 pb-2">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (searchTerm.trim()) {
-                navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
-                setSearchTerm('');
-              }
-            }}
-          >
+          <form onSubmit={handleSearch}>
             <div className="input-group shadow-sm rounded overflow-hidden">
               <input
                 type="text"
@@ -368,8 +424,12 @@ const Navbar = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <button type="submit" className="btn btn-light border-0">
-                <img src={SearchIcon} alt="Search" width={16} height={16} />
+              <button
+                type="submit"
+                className="btn border-0"
+                style={{ backgroundColor: '#ff6b35' }}
+              >
+                <img src={SearchIcon} alt="Search" width={16} height={16} style={{ filter: 'brightness(0) invert(1)' }} />
               </button>
             </div>
           </form>
@@ -378,21 +438,29 @@ const Navbar = () => {
 
       {/* Offcanvas Sidebar for Mobile */}
       <div className="offcanvas offcanvas-start" tabIndex="-1" id="mobileSidebar">
-        <div className="offcanvas-header">
-          <h5 className="offcanvas-title fw-bold">Menu</h5>
-          <button type="button" className="btn-close" data-bs-dismiss="offcanvas"></button>
+        <div className="offcanvas-header" style={{ backgroundColor: '#1a2332' }}>
+          <h5 className="offcanvas-title fw-bold text-white">Menu</h5>
+          <button type="button" className="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
         </div>
         <div className="offcanvas-body">
           <div className="mb-3">
             <button
-              className="btn w-100 text-start d-flex align-items-center gap-2 mb-1"
+              className="btn w-100 text-start d-flex align-items-center gap-2 mb-2 fw-semibold"
               onClick={() => handleMobileNav('/flash-deal')}
+              style={{
+                backgroundColor: '#f8f9fa',
+                border: 'none'
+              }}
             >
               <img src={FlashIcon} alt="Flash" width={24} height={24} /> Flash Deal
             </button>
             <button
-              className="btn w-100 text-start d-flex align-items-center gap-2"
+              className="btn w-100 text-start d-flex align-items-center gap-2 fw-semibold"
               onClick={() => handleMobileNav('/special-offer')}
+              style={{
+                backgroundColor: '#f8f9fa',
+                border: 'none'
+              }}
             >
               <img src={OfferIcon} alt="Offer" width={24} height={24} /> Special Offer
             </button>
@@ -452,7 +520,7 @@ const Navbar = () => {
           {user ? (
             <>
               <button
-                className="btn w-100 text-start"
+                className="btn w-100 text-start mb-2"
                 onClick={() => handleMobileNav('/profile')}
               >
                 Profile
@@ -463,10 +531,15 @@ const Navbar = () => {
             </>
           ) : (
             <button
-              className="btn w-100 btn-dark"
+              className="btn w-100 fw-semibold"
               onClick={() => handleMobileNav('/login')}
+              style={{
+                backgroundColor: '#ff6b35',
+                color: 'white',
+                border: 'none'
+              }}
             >
-              Login
+              Login / Register
             </button>
           )}
         </div>
